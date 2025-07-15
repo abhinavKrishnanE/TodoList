@@ -10,19 +10,20 @@ from django.db import connection
 
 
 class ListTaks(ListCreateAPIView):
-    def get_queryset(self):
-        task_count_obj = Task.objects.annotate(task_count = Count('title'))
-        for task in task_count_obj:
-            print(task.task_count)
-        return Task.objects.filter(owner=self.request.user) 
-    
+
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ["^title","^description"]
     print(Task.objects.annotate(task_count = Count('title')))
 
-
+    def get_queryset(self):
+        task_count_obj = Task.objects.annotate(task_count = Count('title'))
+        for task in task_count_obj:
+            print(task.task_count)
+        return Task.objects.filter(owner=self.request.user) 
+    
+    
 class ListTaskDetails(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)    
