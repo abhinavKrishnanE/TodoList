@@ -11,7 +11,27 @@ from django.db import connection
 
 class ListTaks(ListCreateAPIView):
     def get_queryset(self):
-        # queryset = Task.objects.filter(owner=self.request.user)
+        
+        task_count_obj = Task.objects.annotate(task_count = Count('title'))
+        for task in task_count_obj:
+            print(task.task_count)
+        return Task.objects.filter(owner=self.request.user) 
+    
+    serializer_class = TaskSerializer #For serialization
+    permission_classes = [IsAuthenticated] #Permissions
+    filter_backends = [DjangoFilterBackend, SearchFilter] #To search 
+    search_fields = ["^title","^description"]#To search the fields startswith
+    print(Task.objects.annotate(task_count = Count('title')))
+
+
+class ListTaskDetails(RetrieveUpdateDestroyAPIView):
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)    
+    serializer_class = TaskDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    # queryset = Task.objects.filter(owner=self.request.user)
         # new_queryset = queryset
         # search = self.request.query_params.get('search')
         # status = self.request.query_params.get('status')
@@ -23,20 +43,3 @@ class ListTaks(ListCreateAPIView):
         # elif status is not None:
         #         queryset = new_queryset.filter(status__icontains = status)
         # return queryset
-        task_count_obj = Task.objects.annotate(task_count = Count('title'))
-        for task in task_count_obj:
-            print(task.task_count)
-        return Task.objects.filter(owner=self.request.user) 
-    
-    serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ["^title","^description"]
-    print(Task.objects.annotate(task_count = Count('title')))
-
-
-class ListTaskDetails(RetrieveUpdateDestroyAPIView):
-    def get_queryset(self):
-        return Task.objects.filter(owner=self.request.user)    
-    serializer_class = TaskDetailsSerializer
-    permission_classes = [IsAuthenticated]
