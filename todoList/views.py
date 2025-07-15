@@ -22,8 +22,10 @@ class ListTaks(ListCreateAPIView):
         for task in task_count_obj:
             print(task.task_count)
         return Task.objects.filter(owner=self.request.user) 
-    
-    
+
+
+
+
 class ListTaskDetails(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)    
@@ -44,3 +46,15 @@ class ListTaskDetails(RetrieveUpdateDestroyAPIView):
     #     elif status is not None:
     #             queryset = new_queryset.filter(status__icontains = status)
     #     return queryset
+    # queryset = Task.objects.filter(owner=self.request.user)
+        # new_queryset = queryset
+        # search = self.request.query_params.get('search')
+        # status = self.request.query_params.get('status')
+        # if search is not None:
+        #     if status is None:
+        #         queryset = new_queryset.filter(Q(title__istartswith = search) | Q(description__istartswith = search))
+        #     else:
+        #         queryset = new_queryset.filter((Q(title__istartswith = search) | Q(description__istartswith = search)), status__icontains = status)
+        # elif status is not None:
+        #         queryset = new_queryset.filter(status__icontains = status)
+        # return queryset
