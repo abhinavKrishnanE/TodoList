@@ -11,18 +11,6 @@ from django.db import connection
 
 class ListTaks(ListCreateAPIView):
     def get_queryset(self):
-        # queryset = Task.objects.filter(owner=self.request.user)
-        # new_queryset = queryset
-        # search = self.request.query_params.get('search')
-        # status = self.request.query_params.get('status')
-        # if search is not None:
-        #     if status is None:
-        #         queryset = new_queryset.filter(Q(title__istartswith = search) | Q(description__istartswith = search))
-        #     else:
-        #         queryset = new_queryset.filter((Q(title__istartswith = search) | Q(description__istartswith = search)), status__icontains = status)
-        # elif status is not None:
-        #         queryset = new_queryset.filter(status__icontains = status)
-        # return queryset
         task_count_obj = Task.objects.annotate(task_count = Count('title'))
         for task in task_count_obj:
             print(task.task_count)
@@ -40,3 +28,18 @@ class ListTaskDetails(RetrieveUpdateDestroyAPIView):
         return Task.objects.filter(owner=self.request.user)    
     serializer_class = TaskDetailsSerializer
     permission_classes = [IsAuthenticated]
+
+
+    
+    # queryset = Task.objects.filter(owner=self.request.user)
+    #     new_queryset = queryset
+    #     search = self.request.query_params.get('search')
+    #     status = self.request.query_params.get('status')
+    #     if search is not None:
+    #         if status is None:
+    #             queryset = new_queryset.filter(Q(title__istartswith = search) | Q(description__istartswith = search))
+    #         else:
+    #             queryset = new_queryset.filter((Q(title__istartswith = search) | Q(description__istartswith = search)), status__icontains = status)
+    #     elif status is not None:
+    #             queryset = new_queryset.filter(status__icontains = status)
+    #     return queryset
